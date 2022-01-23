@@ -9,6 +9,8 @@ import {
  import Icon from 'react-native-vector-icons/FontAwesome';
  import Home from './Home';
 import { useNavigation } from '@react-navigation/native';
+import { auth } from '../firebase';
+import { NavigationContainer } from '@react-navigation/native';
 
 
 //const auth = firebase.auth()
@@ -40,41 +42,27 @@ const Register = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [avatar, setAvatar] = useState('');
     // ... 
-   const register = () => {
-      auth.createUserWithEmailAndPassword(email, password)
-         .then((userCredential) => {
-            // Signed in 
-            var user = userCredential.user;
-            // ...
-            user.updateProfile({
-                  displayName: name,
-                  photoUrl: avatar ? avatar : "https://gravatar.com/avatar/94d45dbdba988afacf30d916e7aaad69?s=200&d=mp&r=x",
+    const register = () => {
+        auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                // Signed in 
+                var user = userCredential.user;
+                // ...
+                user.updateProfile({
+                    displayName: name,
+                    photoUrl: avatar ? avatar : "https://gravatar.com/avatar/94d45dbdba988afacf30d916e7aaad69?s=200&d=mp&r=x",
+                })
+                    .catch((error) => {
+                        alert(error.message)
+                    })
+                navigation.navigate('Home')
             })
-                  .catch((error) => {
-                     alert(error.message)
-                  })
-         })
-         .catch((error) => {
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            // ..
-            alert(errorMessage);
-         });
-   }
-
-   const registered = () => {
-    const navigation = useNavigation();
-
-    this.register()
-    Alert.alert(
-        //title
-        'Hello',
-        //body
-        'Registration successful !'
-      )
-      navigation.navigate('Home')
-
-
+            .catch((error) => {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // ..
+                alert(errorMessage);
+            });
     }
    //...
     return (
@@ -104,11 +92,8 @@ const Register = ({ navigation }) => {
                 onChangeText={text => setAvatar(text)}
             />
             <Button
-             title="Submit"
-            // onPress={() => navigation.navigate('Home')}
-            onPress={() => navigation.navigate('Home')}        
-             
-             />
+                title="register" onPress={register} style={styles.button}
+            />
         </View>
     )
 }

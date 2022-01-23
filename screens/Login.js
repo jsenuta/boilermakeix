@@ -1,18 +1,34 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native'
-import {Input, Button} from 'react-native-elements';
-import {
-   SafeAreaView,
-   Text, Alert
-} from 'react-native';
+import {Input, Button, ThemeConsumer} from 'react-native-elements';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../firebase';
+import Register from './Register'
+import Chat from './Chat'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Register from './Register';
+import { NavigationContainer } from '@react-navigation/native';
 
-//import { Register } from 'Register.js';
 
-const Login = ({ navigation }) => {
+const Login = ({navigation}) => {
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    
+    const onLoginPress = () => {
+        
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            navigation.navigate('Home')
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            alert('Login failed.')
+        })
+    }
+
     return (
         <View style={styles.container}>
             <Input
@@ -30,14 +46,8 @@ const Login = ({ navigation }) => {
                 onChangeText={text => setPassword(text)}
                 secureTextEntry
             />
-            <Button title="sign in" style={styles.button} />
-            <Button
-               title="register"
-               //onPress={() => Alert.alert(
-               //   'You pressed the register button !')}
-
-               onPress={() => navigation.navigate('Register')}
-            />
+            <Button title="sign in"  onPress={onLoginPress} style={styles.button} />
+            <Button title="register" onPress={() => navigation.navigate('Register')} style={styles.button} />
         </View>
     )
 }

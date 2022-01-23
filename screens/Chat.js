@@ -1,85 +1,183 @@
-import React, { useState } from 'react';
-import {View, StyleSheet} from 'react-native'
-import { Input, Button } from 'react-native-elements';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {NavigationContainer} from '@react-navigation/native';
-import {
-    SafeAreaView,
-    Text, Alert
- } from 'react-native';
- import Icon from 'react-native-vector-icons/FontAwesome';
- import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
- import { createStackNavigator} from '@react-navigation/stack';
- import { Ionicons } from '@expo/vector-icons';
-
- const Tab = createBottomTabNavigator();
-
-const Stack = createNativeStackNavigator();
-
-const Chat = () => {
-    return (
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Home"
-              component={HomeScreen}
-              options={{ title: 'Welcome' }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      );
-};
-
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
+// import React, { useEffect, useCallback, useState, useLayoutEffect } from 'react';
+// import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+// import { Avatar } from 'react-native-elements';
+// import { GiftedChat } from 'react-native-gifted-chat';
+// import { db, auth } from '../firebase';
 
 
 
-// function Chat() {
+// const Chat = ({ navigation }) => {
+//   const [messages, setMessages] = useState([]);
+//   const signOut = () => {
+//       auth.signOut().then(() => {
+//           // Sign-out successful.
+//           navigation.replace("Login");
+//       }).catch((error) => {
+//           // An error happened.
+//       });
+//   }
+//   useLayoutEffect(() => {
+//       navigation.setOptions({
+//           headerLeft: () => (
+//               <View style={{ marginLeft: 20 }}>
+//                   <Avatar
+//                       rounded
+//                       source={{
+//                           uri: auth?.currentUser?.photoURL,
+//                       }}
+//                   />
+//               </View>
+              
+//           ),
+//           headerRight: () => (
+//               <TouchableOpacity style={{
+//                   marginRight: 10
+//               }}
+//                   onPress={signOut}
+//               >
+//                   <Text>logout</Text>
+//               </TouchableOpacity>
+//           )
+//       })
+//   }, [navigation]);
+
+//   useEffect(() => {
+//       setMessages([
+//           {
+//               _id: 1,
+//               text: 'Hello developer',
+//               createdAt: new Date(),
+//               user: {
+//                   _id: 2,
+//                   name: 'React Native',
+//                   avatar: 'https://placeimg.com/140/140/any',
+//               },
+//           },
+//       ])
+//   }, []);
+  
+//   useLayoutEffect(() => {
+//       const unsubscribe = db.collection('chats').orderBy('createdAt', 'desc').onSnapshot(snapshot => setMessages(
+//           snapshot.docs.map(doc => ({
+//               _id: doc.data()._id,
+//               createdAt: doc.data().createdAt.toDate(),
+//               text: doc.data().text,
+//               user: doc.data().user,
+//           }))
+//       ))}, []);
+
+//   const onSend = useCallback((messages = []) => {
+//       setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+//       const { _id, createdAt, text, user,} = messages[0]
+//       db.collection('chats').add({ _id, createdAt,  text, user })
+//   }, []);
 //   return (
-//     <Tab.Navigator
-//     screenOptions={({ route }) => ({
-//       tabBarIcon: ({ focused, color, size }) => {
-//      let iconName;
-//      if (route.name === 'TabA') {
-//         iconName = focused
-//         ? 'ios-information-circle'
-//         : 'ios-information-circle-outline';
-//       } else if (route.name === 'TabB') {
-//         iconName = focused
-//         ? 'ios-list-box'
-//         : 'ios-list';
-//       }
-// return <Ionicons name={iconName} size={size} color={color}     />;
-//         },
-//       })}
-//       tabBarOptions={{
-//       activeTintColor: 'tomato',
-//       inactiveTintColor: 'gray',
-//       }}
-//     >
-//         <Tab.Screen name="TabA" component={TabAScreen} />
-//         <Tab.Screen name="TabB" component={TabBScreen} />
-//     </Tab.Navigator>
+//       <GiftedChat
+//           messages={messages}
+//           showAvatarForEveryMessage={true}
+//           onSend={messages => onSend(messages)}
+//           user={{
+//               _id: auth?.currentUser?.email,
+//               name: auth?.currentUser?.displayName,
+//               avatar: auth?.currentUser?.photoURL
+//           }}
+//       />
 //   );
 // }
 
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        padding: 10,
-        marginTop: 100,
-    },
-    button: {
-        width: 370,
-        marginTop: 10
+// const styles = StyleSheet.create({
+// });
+// export default Chat;
+
+import React, { useEffect, useCallback, useState, useLayoutEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Avatar } from 'react-native-elements';
+import { db, auth } from '../firebase';
+import { GiftedChat } from 'react-native-gifted-chat';
+
+
+
+const Chat = ({ navigation }) => {
+    const [messages, setMessages] = useState([]);
+    const signOut = () => {
+        auth.signOut().then(() => {
+            // Sign-out successful.
+            navigation.replace("Login");
+        }).catch((error) => {
+            // An error happened.
+        });
     }
-})
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerLeft: () => (
+                <View style={{ marginLeft: 20 }}>
+                    <Avatar
+                        rounded
+                        source={{
+                            uri: auth?.currentUser?.photoURL,
+                        }}
+                    />
+                </View>
+                
+            ),
+            headerRight: () => (
+                <TouchableOpacity style={{
+                    marginRight: 10
+                }}
+                    onPress={signOut}
+                >
+                    <Text>logout</Text>
+                </TouchableOpacity>
+            )
+        })
+    }, [navigation]);
+
+    useEffect(() => {
+        setMessages([
+            {
+                _id: 1,
+                text: 'Hello developer',
+                createdAt: new Date(),
+                user: {
+                    _id: 2,
+                    name: 'React Native',
+                    avatar: 'https://placeimg.com/140/140/any',
+                },
+            },
+        ])
+    }, []);
+    
+    useLayoutEffect(() => {
+        const unsubscribe = db.collection('chats').orderBy('createdAt', 'desc').onSnapshot(snapshot => setMessages(
+            snapshot.docs.map(doc => ({
+                _id: doc.data()._id,
+                createdAt: doc.data().createdAt.toDate(),
+                text: doc.data().text,
+                user: doc.data().user,
+            }))
+        ))}, []);
+
+    const onSend = useCallback((messages = []) => {
+        setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+        const { _id, createdAt, text, user,} = messages[0]
+        db.collection('chats').add({ _id, createdAt,  text, user })
+    }, []);
+    return (
+        <GiftedChat
+            messages={messages}
+            showAvatarForEveryMessage={true}
+            onSend={messages => onSend(messages)}
+            user={{
+                _id: auth?.currentUser?.email,
+                name: auth?.currentUser?.displayName,
+                avatar: auth?.currentUser?.photoURL
+            }}
+        />
+    );
+}
+
+
+const styles = StyleSheet.create({
+});
 export default Chat;
