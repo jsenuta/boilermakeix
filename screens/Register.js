@@ -13,27 +13,6 @@ import { auth } from '../firebase';
 import { NavigationContainer } from '@react-navigation/native';
 
 
-//const auth = firebase.auth()
-
-
-// const Stack = createNativeStackNavigator();
-
-// const myStack = () => {
-//     return (
-//         <NavigationContainer>
-//           <Stack.Navigator>
-//             <Stack.Screen
-//               name="Home"
-//               component={HomeScreen}
-//               options={{ title: 'Welcome' }}
-//             />
-//             <Stack.Screen name="Profile" component={ProfileScreen} />
-//           </Stack.Navigator>
-//         </NavigationContainer>
-//       );
-// };
-
-
 
 
 const Register = ({ navigation }) => {
